@@ -2,9 +2,9 @@
 
 A browser-based implementation of the classic Snake game enhanced with artificial intelligence capabilities. The system learns from player behavior and dynamically adapts game elements including food placement, difficulty, and visual feedback to create a personalized gaming experience.
 
-## 🎮 [Play the Game Online](https://your-username.github.io/ai-adaptive-snake-game/)
+## 🎮 [Play the Game Online](https://niranjan252005.github.io/snake-game-with-ai-twist/)
 
-*Replace the URL above with your actual GitHub Pages URL after deployment*
+🌟 **Live Demo**: Your AI-Adaptive Snake Game is deployed and ready to play!
 
 ## Project Structure
 
@@ -53,7 +53,7 @@ A browser-based implementation of the classic Snake game enhanced with artificia
 ### Running the Game
 
 #### Option 1: Play Online
-Visit the [live demo](https://your-username.github.io/ai-adaptive-snake-game/) (replace with your GitHub Pages URL)
+Visit the [live demo](https://niranjan252005.github.io/snake-game-with-ai-twist/)
 
 #### Option 2: Run Locally
 1. Start a local server:

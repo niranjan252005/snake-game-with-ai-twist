@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Adaptive Snake Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .game-header {
+            display: flex;
+            gap: 30px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .score-display {
+            color: #00ff00;
+        }
+
+        .high-score-display {
+            color: #ffff00;
+        }
+
+        .difficulty-display {
+            color: #ff6600;
+        }
+
+        #gameCanvas {
+            border: 2px solid #ffffff;
+            background-color: #000000;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+
+        .game-controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .control-button {
+            padding: 10px 20px;
+            background-color: #333333;
+            color: #ffffff;
+            border: 1px solid #666666;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .control-button:hover {
+            background-color: #555555;
+        }
+
+        .control-button:active {
+            background-color: #222222;
+        }
+
+        .game-instructions {
+            margin-top: 20px;
+            text-align: center;
+            color: #cccccc;
+            font-size: 14px;
+        }
+
+        .game-over-screen {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 30px;
+            border: 2px solid #ffffff;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        .game-over-title {
+            font-size: 24px;
+            color: #ff0000;
+            margin-bottom: 15px;
+        }
+
+        .final-score {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .score-display, .high-score-display, .difficulty-display {
+            transition: transform 0.2s ease, color 0.3s ease;
+        }
+
+        .control-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .control-button:disabled:hover {
+            background-color: #333333;
+        }
+
+        .game-header {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .game-over-screen {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { 
+                opacity: 0; 
+                transform: translate(-50%, -60%); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translate(-50%, -50%); 
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <div class="score-display">Score: <span id="currentScore">0</span></div>
+            <div class="high-score-display">High Score: <span id="highScore">0</span></div>
+            <div class="difficulty-display">Difficulty: <span id="difficultyLevel">1</span></div>
+            <div class="ai-status-display" style="color: #00ffff;">AI: <span id="aiStatus">Learning</span></div>
+        </div>
+        
+        <canvas id="gameCanvas" width="600" height="600"></canvas>
+        
+        <div class="game-controls">
+            <button class="control-button" id="startButton">Start Game</button>
+            <button class="control-button" id="pauseButton">Pause</button>
+            <button class="control-button" id="restartButton">Restart</button>
+        </div>
+        
+        <div class="game-instructions">
+            <p><strong>Controls:</strong> Arrow keys or WASD to move • Space/ESC to pause • Enter to start/restart</p>
+            <p><strong>AI Features:</strong> Learns from your movements • Adapts difficulty • Smart food placement</p>
+            <p id="gameStatusText" style="margin-top: 10px; font-style: italic; color: #888;">Press Start Game to begin</p>
+        </div>
+    </div>
+
+    <div class="game-over-screen" id="gameOverScreen">
+        <div class="game-over-title">Game Over!</div>
+        <div class="final-score">Final Score: <span id="finalScore">0</span></div>
+        <button class="control-button" id="restartFromGameOver">Play Again</button>
+    </div>
+
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

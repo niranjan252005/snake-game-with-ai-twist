@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Adaptive Snake Game - Performance Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #000;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        #gameCanvas {
+            border: 2px solid #333;
+            background-color: #111;
+        }
+        
+        #performanceStats {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #222;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .stat-row {
+            margin: 5px 0;
+        }
+        
+        .good { color: #00ff00; }
+        .warning { color: #ffff00; }
+        .bad { color: #ff0000; }
+    </style>
+</head>
+<body>
+    <h1>AI-Adaptive Snake Game - Performance Test</h1>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    
+    <div id="performanceStats">
+        <div class="stat-row">FPS: <span id="fpsCounter">--</span></div>
+        <div class="stat-row">Frame Time: <span id="frameTime">--</span>ms</div>
+        <div class="stat-row">Min FPS: <span id="minFps">--</span></div>
+        <div class="stat-row">Max FPS: <span id="maxFps">--</span></div>
+        <div class="stat-row">Avg FPS: <span id="avgFps">--</span></div>
+        <div class="stat-row">Performance Status: <span id="performanceStatus">--</span></div>
+    </div>
+    
+    <div style="margin-top: 20px;">
+        <button id="startTest">Start Performance Test</button>
+        <button id="stopTest">Stop Test</button>
+    </div>
+
+    <script type="module">
+        import { GameEngine } from './js/gameEngine.js';
+        
+        class PerformanceTest {
+            constructor() {
+                this.canvas = document.getElementById('gameCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.gameEngine = new GameEngine(this.ctx, this.canvas.width, this.canvas.height);
+                
+                this.fpsHistory = [];
+                this.frameCount = 0;
+                this.lastTime = performance.now();
+                this.testStartTime = 0;
+                this.isRunning = false;
+                
+                this.setupEventListeners();
+            }
+            
+            setupEventListeners() {
+                document.getElementById('startTest').addEventListener('click', () => {
+                    this.startTest();
+                });
+                
+                document.getElementById('stopTest').addEventListener('click', () => {
+                    this.stopTest();
+                });
+            }
+            
+            startTest() {
+                if (this.isRunning) return;
+                
+                this.isRunning = true;
+                this.fpsHistory = [];
+                this.frameCount = 0;
+                this.testStartTime = performance.now();
+                this.lastTime = this.testStartTime;
+                
+                // Start the game
+                this.gameEngine.start();
+                
+                // Start performance monitoring
+                this.monitorPerformance();
+                
+                document.getElementById('startTest').disabled = true;
+                document.getElementById('stopTest').disabled = false;
+            }
+            
+            stopTest() {
+                this.isRunning = false;
+                this.gameEngine.stop();
+                
+                document.getElementById('startTest').disabled = false;
+                document.getElementById('stopTest').disabled = true;
+                
+                this.displayFinalResults();
+            }
+            
+            monitorPerformance() {
+                if (!this.isRunning) return;
+                
+                const currentTime = performance.now();
+                const deltaTime = currentTime - this.lastTime;
+                
+                if (deltaTime > 0) {
+                    const fps = 1000 / deltaTime;
+                    this.fpsHistory.push(fps);
+                    this.frameCount++;
+                    
+                    // Keep only last 60 frames for rolling average
+                    if (this.fpsHistory.length > 60) {
+                        this.fpsHistory.shift();
+                    }
+                    
+                    this.updateDisplay(fps, deltaTime);
+                }
+                
+                this.lastTime = currentTime;
+                requestAnimationFrame(() => this.monitorPerformance());
+            }
+            
+            updateDisplay(currentFps, frameTime) {
+                const minFps = Math.min(...this.fpsHistory);
+                const maxFps = Math.max(...this.fpsHistory);
+                const avgFps = this.fpsHistory.reduce((a, b) => a + b, 0) / this.fpsHistory.length;
+                
+                document.getElementById('fpsCounter').textContent = currentFps.toFixed(1);
+                document.getElementById('frameTime').textContent = frameTime.toFixed(2);
+                document.getElementById('minFps').textContent = minFps.toFixed(1);
+                document.getElementById('maxFps').textContent = maxFps.toFixed(1);
+                document.getElementById('avgFps').textContent = avgFps.toFixed(1);
+                
+                // Update performance status
+                const statusElement = document.getElementById('performanceStatus');
+                if (avgFps >= 58) {
+                    statusElement.textContent = 'EXCELLENT (≥58 FPS)';
+                    statusElement.className = 'good';
+                } else if (avgFps >= 50) {
+                    statusElement.textContent = 'GOOD (≥50 FPS)';
+                    statusElement.className = 'warning';
+                } else {
+                    statusElement.textContent = 'POOR (<50 FPS)';
+                    statusElement.className = 'bad';
+                }
+                
+                // Color code FPS counter
+                const fpsElement = document.getElementById('fpsCounter');
+                if (currentFps >= 58) {
+                    fpsElement.className = 'good';
+                } else if (currentFps >= 50) {
+                    fpsElement.className = 'warning';
+                } else {
+                    fpsElement.className = 'bad';
+                }
+            }
+            
+            displayFinalResults() {
+                if (this.fpsHistory.length === 0) return;
+                
+                const minFps = Math.min(...this.fpsHistory);
+                const maxFps = Math.max(...this.fpsHistory);
+                const avgFps = this.fpsHistory.reduce((a, b) => a + b, 0) / this.fpsHistory.length;
+                const testDuration = (performance.now() - this.testStartTime) / 1000;
+                
+                const results = `
+Performance Test Results:
+========================
+Test Duration: ${testDuration.toFixed(1)}s
+Total Frames: ${this.frameCount}
+Average FPS: ${avgFps.toFixed(2)}
+Min FPS: ${minFps.toFixed(2)}
+Max FPS: ${maxFps.toFixed(2)}
+Target: 60 FPS
+Status: ${avgFps >= 58 ? 'PASS' : 'FAIL'}
+                `;
+                
+                console.log(results);
+                alert(results);
+            }
+        }
+        
+        // Initialize performance test
+        new PerformanceTest();
+    </script>
+</body>
+</html>

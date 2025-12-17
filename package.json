@@ -1,0 +1,87 @@
+{
+  "name": "ai-adaptive-snake-game",
+  "version": "1.0.0",
+  "description": "A browser-based Snake game enhanced with AI that learns from player behavior and adapts game elements dynamically",
+  "main": "js/main.js",
+  "type": "module",
+  "scripts": {
+    "start": "python -m http.server 5500",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:property": "jest --testNamePattern=\"Property\"",
+    "test:unit": "jest --testNamePattern=\"Unit\"",
+    "lint": "eslint js/**/*.js",
+    "serve": "python -m http.server 5500",
+    "build": "echo 'No build step required - static files ready for deployment'",
+    "deploy": "echo 'Deploy using GitHub Pages - see README.md for instructions'"
+  },
+  "keywords": [
+    "snake-game",
+    "ai",
+    "adaptive",
+    "machine-learning",
+    "browser-game",
+    "javascript",
+    "canvas"
+  ],
+  "author": "AI-Adaptive Snake Game Team",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "fast-check": "^3.15.0",
+    "@babel/core": "^7.23.0",
+    "@babel/preset-env": "^7.23.0",
+    "babel-jest": "^29.7.0",
+    "eslint": "^8.55.0"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"],
+    "moduleFileExtensions": ["js", "json"],
+    "testMatch": [
+      "<rootDir>/tests/**/*.test.js"
+    ],
+    "collectCoverageFrom": [
+      "js/**/*.js",
+      "!js/main.js"
+    ],
+    "coverageDirectory": "coverage",
+    "coverageReporters": ["text", "lcov", "html"],
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    },
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/js/$1"
+    }
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ]
+    ]
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "es2021": true,
+      "jest": true
+    },
+    "extends": "eslint:recommended",
+    "parserOptions": {
+      "ecmaVersion": "latest",
+      "sourceType": "module"
+    },
+    "rules": {
+      "no-unused-vars": "warn",
+      "no-console": "off"
+    }
+  }
+}
